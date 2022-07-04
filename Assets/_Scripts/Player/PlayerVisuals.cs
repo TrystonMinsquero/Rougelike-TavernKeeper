@@ -3,10 +3,10 @@ using System.Collections;
 using UnityEngine;
 
 
-[RequireComponent(typeof(Animator), typeof(SpriteRenderer), typeof(Directed))]
+[RequireComponent(typeof(Animator), typeof(SpriteRenderer), typeof(DirectionInfo))]
 public class PlayerVisuals : MonoBehaviour
 {
-    private Directed _dir;
+    private DirectionInfo _dir;
     private SpriteRenderer _sr;
     private Animator _anim;
 
@@ -30,7 +30,9 @@ public class PlayerVisuals : MonoBehaviour
         Scale = 1;
         _sr = GetComponent<SpriteRenderer>();
         _anim = GetComponent<Animator>();
-        _dir = GetComponent<Directed>();
+        _dir = GetComponent<DirectionInfo>();
+        
+        
     }
 
     private void Update()

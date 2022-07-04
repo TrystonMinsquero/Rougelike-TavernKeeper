@@ -1,18 +1,19 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Weapons;
 
 namespace Player
 {
-    [RequireComponent(typeof(PlayerInput), typeof(Directed))]
+    [RequireComponent(typeof(PlayerInput), typeof(PlayerMovement), typeof(PlayerAttack))]
     public class PlayerController : MonoBehaviour
     {
         private Controls _controls;
         private PlayerInput _playerInput;
         private Camera _mainCam;
         
-        private Directed _directed;
+        [SerializeField] private DirectionInfo directionInfo;
         private PlayerMovement _playerMovement;
-        // private PlayerAttack _playerAttack;
+        private PlayerAttack _playerAttack;
         
         void Awake()
         {
@@ -20,20 +21,24 @@ namespace Player
             _controls.Enable();
             _mainCam = Camera.main;
             _playerInput = GetComponent<PlayerInput>();
-            _directed = GetComponent<Directed>();
+            if(!directionInfo)
+                directionInfo = GetComponent<DirectionInfo>();
+            if (!directionInfo)
+                directionInfo = gameObject.AddComponent<DirectionInfo>();
             _playerMovement = GetComponent<PlayerMovement>();
+            _playerAttack = GetComponent<PlayerAttack>();
 
         }
 
-        public void Move(InputAction.CallbackContext ctx)
+        public void OnMove(InputAction.CallbackContext ctx)
         {
             var moveDir = ctx.ReadValue<Vector2>();
-            Debug.Log(moveDir);
+            // Debug.Log(moveDir);
             _playerMovement.Move(moveDir);
-            _directed.moveDirection = moveDir;
+            directionInfo.moveDirection = moveDir;
         }
 
-        public void Look(InputAction.CallbackContext ctx)
+        public void OnLook(InputAction.CallbackContext ctx)
         {
             Vector2 lookInput;
             if (_playerInput.currentControlScheme == "Keyboard & Mouse")
@@ -44,7 +49,13 @@ namespace Player
             else
                 lookInput = ctx.ReadValue<Vector2>();
 
-            _directed.lookDirection = lookInput;
+            directionInfo.lookDirection = lookInput;
+        }
+
+
+        public void OnUseAttack(InputAction.CallbackContext ctx)
+        {
+            _playerAttack.Attack(directionInfo);
         }
         
         // public void Activate(InputAction.CallbackContext ctx)
@@ -65,11 +76,20 @@ namespace Player
         private void OnEnable()
         {
             _controls.Enable();
+
+            _controls.Gameplay.Movement.performed += OnMove;
+            _controls.Gameplay.Look.performed += OnLook;
+            _controls.Gameplay.UseAttack.performed += OnUseAttack;
         }
 
         private void OnDisable()
         {
             _controls.Disable();
+            
+            _controls.Gameplay.Movement.performed -= OnMove;
+            _controls.Gameplay.Look.performed -= OnLook;
+            _controls.Gameplay.UseAttack.performed -= OnUseAttack;
+
         }
     }
 }

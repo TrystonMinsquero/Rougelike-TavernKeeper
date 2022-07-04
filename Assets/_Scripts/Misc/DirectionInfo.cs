@@ -13,7 +13,7 @@ public enum Direction
     UP_LEFT
 }
 
-public class Directed : MonoBehaviour
+public class DirectionInfo : MonoBehaviour
 {
     [HideInInspector] public Direction direction;
     [HideInInspector] public Vector2 lookDirection;
