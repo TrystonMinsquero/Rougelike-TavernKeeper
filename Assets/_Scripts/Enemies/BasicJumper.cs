@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections;
-using Animancer.FSM;
-using EditorUtils;
-using Items;
 using Misc;
 using UnityEngine;
 
@@ -23,12 +20,14 @@ namespace Enemies
         public BasicJumperState currentState = BasicJumperState.Rest;
 
         [Header("Jumper Attributes")]
-        public float jumpPower = 10f;
-        public float jumpDampening = 1;
+        // public float jumpPower = 10f;
+        // public float jumpDampening = 1;
+        public AnimationCurve jumpCurve;
         public float restTimeAfterJump = 1f;
         public float chargeTime = .8f;
-        public float lungePower = 20f;
-        public float lungeDampening = 1;
+        // public float lungePower = 20f;
+        // public float lungeDampening = 1;
+        public AnimationCurve lungeCurve;
         public float lungeAttackRange = 3f;
         public float restTimeAfterLunge = 3f;
 
@@ -76,12 +75,12 @@ namespace Enemies
                 // Action states
                 case BasicJumperState.JumpToward:
                     Debug.Log("Jump");
-                    JumpTowardPlayer(jumpPower, jumpDampening, restTimeAfterJump);
+                    JumpTowardPlayer(jumpCurve, restTimeAfterJump);
                     return BasicJumperState.Jumping;
                 
                 case BasicJumperState.LungeToward:
                     Debug.Log("Lunge");
-                    JumpTowardPlayer(lungePower, lungeDampening, restTimeAfterLunge);
+                    JumpTowardPlayer(lungeCurve, restTimeAfterLunge);
                     return BasicJumperState.Jumping;
                 
                 // Waiting States
@@ -110,10 +109,22 @@ namespace Enemies
             return state;
         }
 
-        private void JumpTowardPlayer(float speed, float distance, float restTime)
+        // private void JumpTowardPlayer(float speed, float distance, float restTime)
+        // {
+        //     _isJumping = true;
+        //     StartCoroutine(JumpToward(PlayerDirection, speed, distance,
+        //         () =>
+        //         {
+        //             _isJumping = false;
+        //             _isResting = true;
+        //             StartCoroutine(DoAfter(restTime, () => _isResting = false));
+        //         }));
+        // }
+        
+        private void JumpTowardPlayer(AnimationCurve curve, float restTime)
         {
             _isJumping = true;
-            StartCoroutine(JumpToward(PlayerDirection, speed, distance,
+            StartCoroutine(JumpToward(PlayerDirection, curve,
                 () =>
                 {
                     _isJumping = false;
@@ -128,16 +139,34 @@ namespace Enemies
             action();
         }
 
-        private IEnumerator JumpToward(Vector2 direction, float initVelocity, float dampening, Action onFinish = null)
+        // private IEnumerator JumpToward(Vector2 direction, float initVelocity, float dampening, Action onFinish = null)
+        // {
+        //     _rb.velocity = direction.normalized * initVelocity;
+        //     while (_rb.velocity.magnitude > .01f)
+        //     {
+        //         _rb.velocity -= _rb.velocity.normalized * dampening * Time.deltaTime;
+        //         yield return null;
+        //     }
+        //     _rb.velocity -= Vector2.zero;
+        //     
+        //     if (onFinish != null)
+        //         onFinish();
+        // }
+        
+        private IEnumerator JumpToward(Vector2 direction, AnimationCurve curve, Action onFinish = null)
         {
-            _rb.velocity = direction.normalized * initVelocity;
-            while (_rb.velocity.magnitude > .01f)
+            float length = curve.keys[curve.keys.Length - 1].time;
+            float startTime = Time.time;
+            Vector2 initPosition = transform.position;
+
+            while (Time.time < startTime + length)
             {
-                _rb.velocity -= _rb.velocity.normalized * dampening * Time.deltaTime;
+                var newPos = (curve.Evaluate(Time.time - startTime) * direction) + initPosition;
+                _rb.MovePosition(newPos);
                 yield return null;
             }
-            _rb.velocity -= Vector2.zero;
-            
+
+            // transform.position = curve.keys[curve.keys.Length - 1].value * direction;
             if (onFinish != null)
                 onFinish();
         }

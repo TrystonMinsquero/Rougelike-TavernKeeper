@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76dc314b14814b18a7bbd17a442d0a76, type: 3}
   m_Name: Eyeball
   m_EditorClassIdentifier: 
-  name: Eyeball
+  itemName: Eyeball
   description: You can cook with this?
   image: {fileID: 21300000, guid: f7659c19093ccaf4dbb1e882df96c5ff, type: 3}

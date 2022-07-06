@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Items;
 using UnityEngine;
@@ -8,19 +9,41 @@ namespace Player
     [System.Serializable]
     public class Inventory
     {
-        [SerializeField] public int inventorySpace;
+        [SerializeField] public int equippedSlotIndex = 0; 
+        // [SerializeField] public int inventorySpace;
         [SerializeField] private int stackSize;
         [SerializeField] private InventorySlot[] inventorySlots;
 
         public InventorySlot[] InventorySlots => inventorySlots;
 
-        public Inventory(int inventorySpace)
+        public event Action SlotsChanged = delegate {  };
+        public event Action<InventorySlot> Equipped = delegate(InventorySlot slot) {  };
+
+        // public Inventory(int inventorySpace)
+        // {
+        //     this.inventorySpace = inventorySpace;
+        //     inventorySlots = new InventorySlot[inventorySpace];
+        // }
+
+        public int Equip(int index)
         {
-            this.inventorySpace = inventorySpace;
-            inventorySlots = new InventorySlot[inventorySpace];
-        }
+            if (index < 0 || index > inventorySlots.Length)
+                throw new Exception($"Index {index} is out of range of the inventory");
+            var oldSlotIndex = equippedSlotIndex;
+            equippedSlotIndex = index;
+            Equipped.Invoke(inventorySlots[index]);
+            return oldSlotIndex;
+        } 
 
         public bool Add(Item item)
+        {
+            var added = AddInternal(item);
+            if(added)
+                SlotsChanged.Invoke();
+            return added;
+        }
+
+        private bool AddInternal(Item item)
         {
             int firstEmpty = -1;
             for(int i = 0; i < inventorySlots.Length; i++ )
@@ -29,7 +52,7 @@ namespace Player
                 var slot = inventorySlots[i];
                 if (slot.IsNothing() && firstEmpty < 0)
                     firstEmpty = i;
-                else if (!slot.IsNothing() && slot.item.Name == item.Name && slot.amount < stackSize)
+                if (!slot.IsNothing() && slot.item.Name == item.Name && slot.amount < stackSize)
                 {
                     inventorySlots[i].amount += 1;
                     return true;

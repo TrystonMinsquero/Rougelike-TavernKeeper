@@ -11,17 +11,28 @@ namespace Player
     {
         private Health _health;
         public Inventory inventory;
+        public HeldItem heldItem;
 
         private void Awake()
         {
             _health = GetComponent<Health>();
-            inventory = new Inventory(inventory.inventorySpace);
         }
 
         public void Start()
         {
+        }
+
+        private void OnEnable()
+        {
             _health.OnDamaged += (amount) => Debug.Log($"{name} took {amount} damage");
             _health.OnDied += () => Debug.Log($"{name} died, bruh");
+
+            inventory.Equipped += heldItem.UpdateItem;
+        }
+
+        private void OnDisable()
+        {
+            inventory.Equipped -= heldItem.UpdateItem;
         }
 
         private void OnCollisionEnter2D(Collision2D col)

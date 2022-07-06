@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 867b6c47efce4e258650977064caf6f1, type: 3}
   m_Name: Flimsy Sword
   m_EditorClassIdentifier: 
-  name: Flimsy Sword
+  itemName: Flimsy Sword
   description: This sword has seen better days
   image: {fileID: 21300000, guid: c025d61284e00d44ea7c49f64da2b71d, type: 3}
   weaponType: 0

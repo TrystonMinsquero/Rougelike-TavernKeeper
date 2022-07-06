@@ -9,21 +9,21 @@ namespace Items
     [System.Serializable]
     public abstract class Item : ScriptableObject
     {
-        public string Name { get => name; private set => name = value; }
-        public string Description { get => description; private set => description = value; }
-        public Sprite Image { get => image; private set => image = value; }
+        public string Name => itemName;
+        public string Description => description;
+        public Sprite Image => image;
         
         [Header("Basic Attributes")]
-        [SerializeField] private new string name;
+        [SerializeField] private string itemName;
         [TextArea(1, 2)]
         [SerializeField] private string description;
         [SerializeField] private Sprite image;
 
         public Item(string name, string description, Sprite image)
         {
-            Name = name;
-            Description = description;
-            Image = image;
+            itemName = name;
+            this.description = description;
+            this.image = image;
         }
 
         public Item()

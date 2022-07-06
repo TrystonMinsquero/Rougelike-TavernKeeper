@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76dc314b14814b18a7bbd17a442d0a76, type: 3}
   m_Name: PlumpHelmet
   m_EditorClassIdentifier: 
-  name: Plump Helmet
+  itemName: Plump Helmet
   description: The food source of almost every dwarven kingdom
   image: {fileID: 21300000, guid: d2ae417877605e24ebb8f94ce9ac3e35, type: 3}

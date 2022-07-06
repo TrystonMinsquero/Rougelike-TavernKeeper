@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76dc314b14814b18a7bbd17a442d0a76, type: 3}
   m_Name: Glow berries
   m_EditorClassIdentifier: 
-  name: Glow Berries
+  itemName: Glow Berries
   description: They stain you're mouth with glow juice, but are so tart it's worth
     it
-  image: {fileID: 0}
+  image: {fileID: 21300000, guid: 44ef3ff346c977949b30288437d8b3ba, type: 3}
