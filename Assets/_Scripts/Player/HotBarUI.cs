@@ -6,11 +6,9 @@ namespace Player
 {
     public class HotBarUI : MonoBehaviour
     {
-        public Player player;
+        public Inventory inventory;
         public InventorySlotUI[] slots;
         public int selectedSlotIndex;
-
-        public Inventory Inventory => player.inventory;
 
         private void Start()
         {
@@ -20,12 +18,12 @@ namespace Player
                 slots[i].Selected += () => EquipSlot(i1);
             }
             UpdateSlots();
-            Inventory.SlotsChanged += UpdateSlots;
+            inventory.SlotsChanged += UpdateSlots;
         }
 
         private void UpdateSlots()
         {
-            UpdateSlots(Inventory);
+            UpdateSlots(inventory);
         }
 
         public void UpdateSlots(Inventory inventory)
@@ -43,7 +41,7 @@ namespace Player
         {
             try
             {
-                Inventory.Equip(index);
+                inventory.Equip(index);
             } catch(Exception e) {Debug.LogError(e);}
 
             slots[selectedSlotIndex].Select(false);
@@ -52,12 +50,12 @@ namespace Player
 
         private void OnEnable()
         {
-            Inventory.SlotsChanged += UpdateSlots;
+            inventory.SlotsChanged += UpdateSlots;
         }
         
         private void OnDisable()
         {
-            Inventory.SlotsChanged -= UpdateSlots;
+            inventory.SlotsChanged -= UpdateSlots;
         }
     }
 }

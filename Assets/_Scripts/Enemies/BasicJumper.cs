@@ -74,12 +74,12 @@ namespace Enemies
             {
                 // Action states
                 case BasicJumperState.JumpToward:
-                    Debug.Log("Jump");
+                    // Debug.Log("Jump");
                     JumpTowardPlayer(jumpCurve, restTimeAfterJump);
                     return BasicJumperState.Jumping;
                 
                 case BasicJumperState.LungeToward:
-                    Debug.Log("Lunge");
+                    // Debug.Log("Lunge");
                     JumpTowardPlayer(lungeCurve, restTimeAfterLunge);
                     return BasicJumperState.Jumping;
                 

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Weapons;
@@ -55,9 +56,16 @@ namespace Player
 
         public void OnUseAttack(InputAction.CallbackContext ctx)
         {
-            _playerAttack.Attack(directionInfo);
+            // _playerAttack.AttackInput = ctx.ReadValue<float>() > 0;
+            // _playerAttack.DirectionInfo = directionInfo;
         }
-        
+
+        private void Update()
+        {
+            _playerAttack.AttackInput = _controls.Gameplay.UseAttack.ReadValue<float>() > 0;
+            _playerAttack.DirectionInfo = directionInfo;
+        }
+
         // public void Activate(InputAction.CallbackContext ctx)
         // {
         //     ActivateInput = ctx.performed;

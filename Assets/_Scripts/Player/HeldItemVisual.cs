@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Player
 {
-    public class HeldItem : MonoBehaviour
+    public class HeldItemVisual : MonoBehaviour
     {
         private SpriteRenderer _sr;
         public Item item;

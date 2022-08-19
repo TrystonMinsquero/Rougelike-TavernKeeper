@@ -1,35 +1,26 @@
 ﻿using System;
 using System.Collections;
 using Enemies;
+using Items;
 using Misc;
+using UnityEditor;
 using UnityEngine;
 
 namespace Weapons
 {
-    public class SwingMelee : WeaponMB
+    [System.Serializable][CreateAssetMenu(menuName = "Items/SwingMelee")]
+    public class SwingMelee :  Weapon
     {
-        [SerializeField] protected float attackRadius;
-        
-        protected override IEnumerator AttackRoutine(Vector2 direction, Action afterAttack = null)
-        {
-            var pointOfAttack = (Vector2)transform.position + direction * Weapon.Range;
-            var collisions = Physics2D.OverlapCircleAll(pointOfAttack, attackRadius);
-            foreach (var collision in collisions)
-            {
-                if (collision.CompareTag(Enemy.Tag) && collision.TryGetComponent<Health>(out var health))
-                {
-                    health.Damage(Weapon.Damage);
-                }
-            }
-            yield return null;
-        }
+        [SerializeField] public float attackRadius;
+        [SerializeField] public float swingTime;
 
-        protected override void OnDrawGizmosSelected()
+        public override IEnumerator AttackRoutine(WeaponMB weaponObj, Vector2 direction, Action onFinished = null)
         {
-            if (!Weapon)
-                return;
-            var pointOfAttack = (Vector2)transform.position + Vector2.right * Weapon.Range;
-            Gizmos.DrawWireSphere(pointOfAttack, attackRadius);
+            weaponObj.ColliderActive(true);
+            yield return new WaitForSeconds(swingTime);
+            weaponObj.ColliderActive(false);
+            if (onFinished != null)
+                onFinished();
         }
     }
 }

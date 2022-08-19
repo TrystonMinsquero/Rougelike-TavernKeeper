@@ -7,23 +7,17 @@ using UnityEngine;
 namespace Player
 {
     [System.Serializable]
-    public class Inventory
+    public class Inventory : MonoBehaviour
     {
         [SerializeField] public int equippedSlotIndex = 0; 
         // [SerializeField] public int inventorySpace;
         [SerializeField] private int stackSize;
         [SerializeField] private InventorySlot[] inventorySlots;
-
+        public HeldItemVisual heldItemVisual;
         public InventorySlot[] InventorySlots => inventorySlots;
 
         public event Action SlotsChanged = delegate {  };
         public event Action<InventorySlot> Equipped = delegate(InventorySlot slot) {  };
-
-        // public Inventory(int inventorySpace)
-        // {
-        //     this.inventorySpace = inventorySpace;
-        //     inventorySlots = new InventorySlot[inventorySpace];
-        // }
 
         public int Equip(int index)
         {
@@ -64,6 +58,36 @@ namespace Player
 
             inventorySlots[firstEmpty] = new InventorySlot(item);
             return true;
+        }
+
+        private void OnEnable()
+        {
+            Equipped += heldItemVisual.UpdateItem;
+        }
+
+        private void OnDisable()
+        {
+            Equipped -= heldItemVisual.UpdateItem;
+        }
+
+        private void OnCollisionEnter2D(Collision2D col)
+        {
+            Debug.Log("Col" + col.gameObject.name);
+            if (col.gameObject.TryGetComponent<ItemPickup>(out var itemPickup))
+            {
+                if(Add(itemPickup.item))
+                    Destroy(itemPickup.gameObject);
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D col)
+        {
+            Debug.Log("Trigger" + col.gameObject.name);
+            if (col.gameObject.TryGetComponent<ItemPickup>(out var itemPickup))
+            {
+                if(Add(itemPickup.item))
+                    Destroy(itemPickup.gameObject);
+            }
         }
     }
 
